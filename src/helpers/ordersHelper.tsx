@@ -1,38 +1,30 @@
-type bidAskObjectType = {
-    bids: Array<Array<number>>,// [ [price, size] ]
-    asks: Array<Array<number>>,
-    numLevels: number,
-};
+import { ordersObjectType } from './constants';
+
 const priceIndex = 0;
 const sizeIndex = 1;
 
 export const parseInitialOrders = (
-    bidAskObj: bidAskObjectType,
+    bidsArr: Array<Array<number>>,
+    asksArr: Array<Array<number>>,
     tickerSizeFloat: number,
-): any => {
-    let newOrders = {
+): ordersObjectType => {
+    let newOrders: ordersObjectType = {
         bids: [],
+        bidsOriginal: [],
         asks: [],
-        price: 0,
+        asksOriginal: [],
     };
 
-    let bidRunningTotal = bidAskObj.bids[0][sizeIndex];
+    let bidRunningTotal = bidsArr[0][sizeIndex];
     newOrders.bids.push({
-        price: bidAskObj.bids[0][priceIndex],
+        price: bidsArr[0][priceIndex],
         size: bidRunningTotal,
         total: bidRunningTotal,
     });
 
-    let askRunningTotal = bidAskObj.asks[0][sizeIndex];
-    newOrders.asks.push({
-        price: bidAskObj.asks[0][priceIndex],
-        size: askRunningTotal,
-        total: askRunningTotal,
-    });
-
-    // Skip first bid/ask as it's already parsed above
-    for (let i = 1; i < bidAskObj.numLevels; i++) {
-        const currBid = bidAskObj.bids[i];
+    // Skip first bid as it's already parsed above
+    for (let i = 1; i < bidsArr.length; i++) {
+        const currBid = bidsArr[i];
         const lastParsedBid = newOrders.bids[newOrders.bids.length - 1];
         bidRunningTotal += currBid[sizeIndex];
 
@@ -48,8 +40,17 @@ export const parseInitialOrders = (
                 total: bidRunningTotal,
             });
         }
+    }
 
-        const currAsk = bidAskObj.asks[i];
+    let askRunningTotal = asksArr[0][sizeIndex];
+    newOrders.asks.push({
+        price: asksArr[0][priceIndex],
+        size: askRunningTotal,
+        total: askRunningTotal,
+    });
+    // Skip first ask as it's already parsed above
+    for (let i = 1; i < bidsArr.length; i++) {
+        const currAsk = asksArr[i];
         const lastParsedAsk = newOrders.asks[newOrders.asks.length - 1];
         askRunningTotal += currAsk[sizeIndex];
 
@@ -69,6 +70,23 @@ export const parseInitialOrders = (
 
     return newOrders;
 };
+
+export const parseOrdersDelta = (
+    orders: ordersObjectType,
+    deltas: {bids: Array<Array<number>>, asks: Array<Array<number>>},
+): ordersObjectType => {
+    let newOrders: ordersObjectType = Object.assign({}, orders);
+    console.warn(`
+        parseOrdersDelta!
+        deltas are: `)
+    console.warn(JSON.stringify(deltas));
+
+
+    return newOrders
+};
+
+
+
 
 
 

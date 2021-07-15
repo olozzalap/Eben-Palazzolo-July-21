@@ -41,3 +41,11 @@ export const tickerSizes: tickerSizeObject = {
         [baseTickerOptions.lg]: 0.25,
     }
 };
+
+export type ordersObjectType = {
+    bids: Array<any>,
+    bidsOriginal: Array<any>,
+    asks: Array<any>,
+    asksOriginal: Array<any>,
+};
+

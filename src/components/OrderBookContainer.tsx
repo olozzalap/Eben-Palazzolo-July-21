@@ -10,22 +10,24 @@ let renderCount = 1;
 
 const OrderBookContainer = () => {
     console.warn(`
-        Render #: ${renderCount}
+        OrderBookContainer Render #: ${renderCount}
         `)
     renderCount = renderCount + 1;
 
-    const [feedType, setFeedType] = useState(feedTypes.BTC);
-    const [tickerOption, setTickerOption] = useState(baseTickerOptions.sm);
+    const [feedType, setFeedType] = useState<string>(feedTypes.BTC);
+    const [tickerOption, setTickerOption] = useState<string>(baseTickerOptions.sm);
 
     const tickerSizeFloat = tickerSizes[feedType][tickerOption];
+
     console.warn(`
-        tickerSizeFloat is: ${tickerSizeFloat}
+        tickerOption is: ${tickerOption}
         `)
 
     return (
         <>
             <TopBar
                 feedType={feedType}
+                setTickerOption={setTickerOption}
                 tickerOption={tickerOption}
             />
 
