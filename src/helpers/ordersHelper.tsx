@@ -10,9 +10,9 @@ export const parseInitialOrders = (
 ): ordersObjectType => {
     let newOrders: ordersObjectType = {
         bids: [],
-        bidsOriginal: [],
+        bidsOriginal: bidsArr,
         asks: [],
-        asksOriginal: [],
+        asksOriginal: asksArr,
     };
 
     let bidRunningTotal = bidsArr[0][sizeIndex];
@@ -49,7 +49,7 @@ export const parseInitialOrders = (
         total: askRunningTotal,
     });
     // Skip first ask as it's already parsed above
-    for (let i = 1; i < bidsArr.length; i++) {
+    for (let i = 1; i < asksArr.length; i++) {
         const currAsk = asksArr[i];
         const lastParsedAsk = newOrders.asks[newOrders.asks.length - 1];
         askRunningTotal += currAsk[sizeIndex];
@@ -74,15 +74,65 @@ export const parseInitialOrders = (
 export const parseOrdersDelta = (
     orders: ordersObjectType,
     deltas: {bids: Array<Array<number>>, asks: Array<Array<number>>},
+    tickerSizeFloat: number,
 ): ordersObjectType => {
-    let newOrders: ordersObjectType = Object.assign({}, orders);
+    let newBids = orders.bidsOriginal;
+    let newAsks = orders.asksOriginal;
+
     console.warn(`
         parseOrdersDelta!
         deltas are: `)
     console.warn(JSON.stringify(deltas));
 
+    for (let i = 0; i < deltas.bids.length; i++) {
+        const bidDeltaPrice = deltas.bids[i][priceIndex];
+        const bidDeltaSize = deltas.bids[i][sizeIndex];
 
-    return newOrders
+        const matchingNewBidIndex = newBids.findIndex((bid) => bid[priceIndex] === bidDeltaPrice);
+        console.warn(`
+            matchingNewBidIndex is: ${matchingNewBidIndex}
+        `)
+
+        if (matchingNewBidIndex === -1 && bidDeltaSize > 0) {// bidDelta price level doesn't exist in newBids, add it
+            newBids.push([bidDeltaPrice, bidDeltaSize]);
+        } else if (matchingNewBidIndex > -1) {// bidDelta price level does exist in newBids
+            if (bidDeltaSize === 0) {// When delta size is 0 remove the price level
+                newBids.splice(matchingNewBidIndex, 1);
+            } else {// Otherwise update the size from the delta
+                newBids[matchingNewBidIndex][sizeIndex] = bidDeltaSize;
+            }
+        }
+    }
+
+    for (let i = 0; i < deltas.asks.length; i++) {
+        const askDeltaPrice = deltas.asks[i][priceIndex];
+        const askDeltaSize = deltas.asks[i][sizeIndex];
+
+        const matchingNewAskIndex = newAsks.findIndex((ask) => ask[priceIndex] === askDeltaPrice);
+        console.warn(`
+            matchingNewAskIndex is: ${matchingNewAskIndex}
+        `)
+
+        if (matchingNewAskIndex === -1 && askDeltaSize > 0) {// askDelta price level doesn't exist in newAsks, add it
+            newAsks.push([askDeltaPrice, askDeltaSize]);
+        } else if (matchingNewAskIndex > -1) {// askDelta price level does exist in newAsks
+            if (askDeltaSize === 0) {// When delta size is 0 remove the price level
+                newAsks.splice(matchingNewAskIndex, 1);
+            } else {// Otherwise update the size from the delta
+                newAsks[matchingNewAskIndex][sizeIndex] = askDeltaSize;
+            }
+        }
+    }
+
+    newBids.sort((a, b) => b - a);
+    newAsks.sort((a, b) => a - b);
+
+    console.warn(`
+        sortedNewBids are: ${JSON.stringify(newBids)}
+        sortedNewAsks are: ${JSON.stringify(newAsks)}
+        `)
+
+    return parseInitialOrders(newBids, newAsks, tickerSizeFloat);
 };
 
 

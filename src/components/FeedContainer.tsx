@@ -88,11 +88,10 @@ const FeedContainer = ({
                     parseInitialOrders( lastMessageData.bids, lastMessageData.asks, tickerSizeFloat )
                 );
                 setFeedInit(true);
-            } else if (!lastMessageData?.numLevels) {
+            } else if (feedInit && !lastMessageData?.numLevels) {
                 // Only the initial data will have numLevels, subsequent deltas will only have values that changed
-                // parse deltas
                 setOrders(
-                    parseOrdersDelta( orders, lastMessageData )
+                    parseOrdersDelta( orders, lastMessageData, tickerSizeFloat )
                 );
             }
         }
@@ -122,7 +121,6 @@ const FeedContainer = ({
     }, [tickerSizeFloat]);
 
     console.warn(`
-        connectionStatus is: ${connectionStatus}
         orders are: `)
     console.warn(orders)
 
