@@ -3,25 +3,25 @@ import React, { useEffect, useMemo, useState } from 'react';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 import { jsx, css, Global } from '@emotion/react'
 import styled from '@emotion/styled';
-import { baseTickerOptions, colors, feedTypes, tickerSizes } from '../helpers/constants';
+import { baseLevelOptions, colors, feedTypes, levelSizes } from '../helpers/constants';
 
 interface TopBarProps {
   feedType: string,
-  setTickerOption: Function,
-  tickerOption: string,
+  setLevelOption: Function,
+  levelOption: string,
 }
 
 const TopBar = ({
     feedType,
-    setTickerOption,
-    tickerOption,
+    setLevelOption,
+    levelOption,
 }: TopBarProps) => {
 
-    const handleTickerOptionChange = (e: any) => {
-        setTickerOption(e?.target?.value)
+    const handleLevelOptionChange = (e: any) => {
+        setLevelOption(e?.target?.value)
     };
 
-    const feedTickerOptions = tickerSizes[feedType];
+    const feedLevelOptions = levelSizes[feedType];
 
     return (
         <div css={css`
@@ -55,12 +55,12 @@ const TopBar = ({
                         margin-left: 5px;
                         padding: 5px;
                     `}
-                    onChange={handleTickerOptionChange}
-                    value={tickerOption}
+                    onChange={handleLevelOptionChange}
+                    value={levelOption}
                 >
                     {
-                        Object.values(baseTickerOptions).map((baseTickerOption) => (
-                            <option value={baseTickerOption}>{feedTickerOptions[baseTickerOption]}</option>
+                        Object.values(baseLevelOptions).map((baseLevelOption) => (
+                            <option value={baseLevelOption}>{feedLevelOptions[baseLevelOption]}</option>
                         ))
                     }
                 </select>

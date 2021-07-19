@@ -6,7 +6,7 @@ const sizeIndex = 1;
 export const parseInitialOrders = (
     bidsArr: Array<Array<number>>,
     asksArr: Array<Array<number>>,
-    tickerSizeFloat: number,
+    levelSizeFloat: number,
 ): ordersObjectType => {
     let newOrders: ordersObjectType = {
         bids: [],
@@ -28,9 +28,9 @@ export const parseInitialOrders = (
         const lastParsedBid = newOrders.bids[newOrders.bids.length - 1];
         bidRunningTotal += currBid[sizeIndex];
 
-        /* if currBid is within tickerSizeFloat of the last parsed bid price then consolidate,
+        /* if currBid is within levelSizeFloat of the last parsed bid price then consolidate,
         otherwise add a new entry */
-        if ((currBid[priceIndex] + tickerSizeFloat) > lastParsedBid.price) {
+        if ((currBid[priceIndex] + levelSizeFloat) > lastParsedBid.price) {
             newOrders.bids[newOrders.bids.length - 1].size += currBid[sizeIndex];
             newOrders.bids[newOrders.bids.length - 1].total = bidRunningTotal;
         } else {
@@ -54,9 +54,9 @@ export const parseInitialOrders = (
         const lastParsedAsk = newOrders.asks[newOrders.asks.length - 1];
         askRunningTotal += currAsk[sizeIndex];
 
-        /* if currAsk is within tickerSizeFloat of the last parsed ask price then consolidate,
+        /* if currAsk is within levelSizeFloat of the last parsed ask price then consolidate,
         otherwise add a new entry */
-        if ((currAsk[priceIndex] - tickerSizeFloat) < lastParsedAsk.price) {
+        if ((currAsk[priceIndex] - levelSizeFloat) < lastParsedAsk.price) {
             newOrders.asks[newOrders.asks.length - 1].size += currAsk[sizeIndex];
             newOrders.asks[newOrders.asks.length - 1].total = askRunningTotal;
         } else {
@@ -74,7 +74,7 @@ export const parseInitialOrders = (
 export const parseOrdersDelta = (
     orders: ordersObjectType,
     deltas: {bids: Array<Array<number>>, asks: Array<Array<number>>},
-    tickerSizeFloat: number,
+    levelSizeFloat: number,
 ): ordersObjectType => {
     let newBids = orders.bidsOriginal;
     let newAsks = orders.asksOriginal;
@@ -132,7 +132,7 @@ export const parseOrdersDelta = (
         sortedNewAsks are: ${JSON.stringify(newAsks)}
         `)
 
-    return parseInitialOrders(newBids, newAsks, tickerSizeFloat);
+    return parseInitialOrders(newBids, newAsks, levelSizeFloat);
 };
 
 

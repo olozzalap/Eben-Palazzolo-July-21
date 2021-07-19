@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 import { colors } from '../helpers/constants';
 import OrderBookContainer from '../components/OrderBookContainer';
 
-const StyledOrderBookPage = styled.div`
+const StyledOrderBookPage = styled.main`
     background-color: ${colors.black};
     height: 100%;
 `;

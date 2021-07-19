@@ -2,7 +2,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { jsx, css, Global } from '@emotion/react'
 import styled from '@emotion/styled';
-import { baseTickerOptions, colors, feedTypes, tickerSizes } from '../helpers/constants';
+import { baseLevelOptions, colors, feedTypes, levelSizes } from '../helpers/constants';
+import BottomBar from './BottomBar';
 import FeedContainer from './FeedContainer';
 import TopBar from './TopBar';
 
@@ -15,25 +16,30 @@ const OrderBookContainer = () => {
     renderCount = renderCount + 1;
 
     const [feedType, setFeedType] = useState<string>(feedTypes.BTC);
-    const [tickerOption, setTickerOption] = useState<string>(baseTickerOptions.sm);
+    const [levelOption, setLevelOption] = useState<string>(baseLevelOptions.sm);
 
-    const tickerSizeFloat = tickerSizes[feedType][tickerOption];
+    const levelSizeFloat = levelSizes[feedType][levelOption];
 
     console.warn(`
-        tickerOption is: ${tickerOption}
+        levelOption is: ${levelOption}
         `)
 
     return (
         <>
             <TopBar
                 feedType={feedType}
-                setTickerOption={setTickerOption}
-                tickerOption={tickerOption}
+                setLevelOption={setLevelOption}
+                levelOption={levelOption}
             />
 
             <FeedContainer
+                feedType={feedType}
+                levelSizeFloat={levelSizeFloat}
+            />
+
+            <BottomBar
+                killFeed={killFeed}
                 setFeedType={setFeedType}
-                tickerSizeFloat={tickerSizeFloat}
             />
         </>
     );

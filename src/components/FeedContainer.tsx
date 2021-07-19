@@ -5,17 +5,18 @@ import { jsx, css, Global } from '@emotion/react'
 import styled from '@emotion/styled';
 import { colors, feedTypes, ordersObjectType } from '../helpers/constants';
 import { parseInitialOrders, parseOrdersDelta } from '../helpers/ordersHelper';
+import FeedModule from './FeedModule';
 
 interface FeedContainerProps {
-  setFeedType: Function,
-  tickerSizeFloat: number,
+  feedType: string,
+  levelSizeFloat: number,
 }
 const socketUrl = 'wss://www.cryptofacilities.com/ws/v1';
 let messageHistory: Array<Object> = [];
 
 const FeedContainer = ({
-    setFeedType,
-    tickerSizeFloat,
+    feedType,
+    levelSizeFloat,
 }: FeedContainerProps) => {
     const [orders, setOrders] = useState<ordersObjectType>({
         bids: [],
@@ -26,31 +27,13 @@ const FeedContainer = ({
     const [feedInit, setFeedInit] = useState(false);
     const {
         sendJsonMessage,
+        lastJsonMessage,
         lastMessage,
         readyState,
     } = useWebSocket(socketUrl);
 
-    const startBtcFeed = () => {
-        console.warn(`
-                    startBtcFeed!
-                    `)
-        messageHistory = [];
-        sendJsonMessage({"event":"unsubscribe","feed":"book_ui_1","product_ids":["PI_ETHUSD"]});
-        sendJsonMessage({"event":"subscribe","feed":"book_ui_1","product_ids":["PI_XBTUSD"]});
-        setFeedType(feedTypes.BTC);
-        setFeedInit(false);
-    };
-    const startEthFeed = () => {
-        console.warn(`
-                    startEthFeed!
-                    `)
-        messageHistory = [];
-        sendJsonMessage({"event":"unsubscribe","feed":"book_ui_1","product_ids":["PI_XBTUSD"]});
-        sendJsonMessage({"event":"subscribe","feed":"book_ui_1","product_ids":["PI_ETHUSD"]});
-        setFeedType(feedTypes.ETH);
-        setFeedInit(false);
-    };
 
+    // debug
     const connectionStatus = {
         [ReadyState.CONNECTING]: 'Connecting',
         [ReadyState.OPEN]: 'Open',
@@ -58,44 +41,45 @@ const FeedContainer = ({
         [ReadyState.CLOSED]: 'Closed',
         [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
     }[readyState];
-
     useEffect(() => {
         console.warn(`
-            startBtcFeed useEffect
             connectionStatus is: ${connectionStatus}
         `)
-        try {
-            if (readyState === ReadyState.CONNECTING) {
-                startBtcFeed();
-            }
-        } catch(err) {
-            console.warn(`
-                startBtcFeed useEffect, err is: `)
-            console.warn(err);
-        }
     }, [readyState]);
 
     useEffect(() => {
         const lastMessageData = lastMessage?.data ? JSON.parse(lastMessage.data) : null;
-        if (lastMessageData && (lastMessageData?.bids?.length || lastMessageData?.asks?.length)) {
+        if (
+            lastMessageData &&
+            (
+                lastMessageData?.bids?.length || lastMessageData?.asks?.length
+            )
+        ) {
             messageHistory.push(lastMessageData);
+            console.warn(`
+                lastJsonMessage is:
+            `)
+            console.warn(JSON.stringify(lastJsonMessage))
+            console.warn(lastJsonMessage)
 
             if (!feedInit && lastMessageData?.numLevels) {
                 console.warn(`
                     Parse initial values
                 `)
                 setOrders(
-                    parseInitialOrders( lastMessageData.bids, lastMessageData.asks, tickerSizeFloat )
+                    parseInitialOrders( lastMessageData.bids, lastMessageData.asks, levelSizeFloat )
                 );
                 setFeedInit(true);
             } else if (feedInit && !lastMessageData?.numLevels) {
                 // Only the initial data will have numLevels, subsequent deltas will only have values that changed
                 setOrders(
-                    parseOrdersDelta( orders, lastMessageData, tickerSizeFloat )
+                    parseOrdersDelta( orders, lastMessageData, levelSizeFloat )
                 );
             }
         }
 
+
+        // debug
         if (messageHistory.length && messageHistory.length % 10 === 0) {
             console.warn(`
                 We got 10 entries, unsubscribing now
@@ -105,20 +89,38 @@ const FeedContainer = ({
         }
     }, [feedInit, lastMessage, messageHistory]);
 
-    // Handle tickerSize change
+    // Handle levelSize change
     useEffect(() => {
         console.warn(`
-            tickerSizeFloat useEffect
+            levelSizeFloat has changed, recalculate!
         `)
         if (feedInit) {
             console.warn(`
-                updateOrders from new ticker: ${tickerSizeFloat} 
+                updateOrders from new level: ${levelSizeFloat} 
             `)
             setOrders(
-                parseInitialOrders( orders.bidsOriginal, orders.asksOriginal, tickerSizeFloat )
+                parseInitialOrders( orders.bidsOriginal, orders.asksOriginal, levelSizeFloat )
             );
         }
-    }, [tickerSizeFloat]);
+    }, [levelSizeFloat]);
+
+    useEffect(() => {
+        messageHistory = [];
+        setFeedInit(false);
+        if (feedType === feedTypes.BTC) {
+            console.warn(`
+                        startBtcFeed!
+                        `)
+            sendJsonMessage({"event":"unsubscribe","feed":"book_ui_1","product_ids":["PI_ETHUSD"]});
+            sendJsonMessage({"event":"subscribe","feed":"book_ui_1","product_ids":["PI_XBTUSD"]});
+        } else if (feedType === feedTypes.ETH) {
+            console.warn(`
+                        startEthFeed!
+                        `)
+            sendJsonMessage({"event":"unsubscribe","feed":"book_ui_1","product_ids":["PI_XBTUSD"]});
+            sendJsonMessage({"event":"subscribe","feed":"book_ui_1","product_ids":["PI_ETHUSD"]});
+        };
+    }, [feedType])
 
     console.warn(`
         orders are: `)
@@ -126,8 +128,20 @@ const FeedContainer = ({
 
 
     return (
-        <div>
-            FEEDS
+        <div
+            css={css`
+                display: flex;
+                @media (max-width: 768px) {
+                    flex-direction: row-reverse;
+                }
+            `}
+        >
+            <FeedModule
+                orders={orders.bids}
+            />
+            <FeedModule
+                orders={orders.asks}
+            />
         </div>
     );
 };

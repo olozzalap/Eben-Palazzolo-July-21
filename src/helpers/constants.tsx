@@ -13,7 +13,7 @@ export const colors = {
     purple: 'rgb(160, 40, 180)',
 };
 
-export const baseTickerOptions = {
+export const baseLevelOptions = {
     sm: 'sm',
     med: 'med',
     lg: 'lg',
@@ -24,28 +24,39 @@ export const feedTypes = {
     ETH: 'eth',
 };
 
-type tickerSizeObject = {
+type levelSizeObject = {
     [key: string]: {
         [key: string]: number
     }
 }
-export const tickerSizes: tickerSizeObject = {
+export const levelSizes: levelSizeObject = {
     [feedTypes.BTC]: {
-        [baseTickerOptions.sm]: 0.5,
-        [baseTickerOptions.med]: 1.0,
-        [baseTickerOptions.lg]: 2.5,
+        [baseLevelOptions.sm]: 0.5,
+        [baseLevelOptions.med]: 1.0,
+        [baseLevelOptions.lg]: 2.5,
     },
     [feedTypes.ETH]: {
-        [baseTickerOptions.sm]: 0.05,
-        [baseTickerOptions.med]: 0.1,
-        [baseTickerOptions.lg]: 0.25,
+        [baseLevelOptions.sm]: 0.05,
+        [baseLevelOptions.med]: 0.1,
+        [baseLevelOptions.lg]: 0.25,
     }
+};
+
+price
+size
+total
+
+export type ordersObjectType = {
+    bids: Array<any>,
+    bidsOriginal: Array<Array<number>>,
+    asks: Array<any>,
+    asksOriginal: Array<Array<number>>,
 };
 
 export type ordersObjectType = {
     bids: Array<any>,
-    bidsOriginal: Array<any>,
+    bidsOriginal: Array<Array<number>>,
     asks: Array<any>,
-    asksOriginal: Array<any>,
+    asksOriginal: Array<Array<number>>,
 };
 
