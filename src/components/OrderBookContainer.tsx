@@ -23,6 +23,7 @@ const OrderBookContainer = () => {
     const levelSizeFloat = levelSizes[feedType][levelOption];
 
     console.warn(`
+        feedType is: ${feedType}
         levelOption is: ${levelOption}
         `)
 
@@ -43,6 +44,7 @@ const OrderBookContainer = () => {
             />
 
             <BottomBar
+                feedType={feedType}
                 toggleInErrorState={() => setInErrorState(!inErrorState) }
                 setFeedType={setFeedType}
             />

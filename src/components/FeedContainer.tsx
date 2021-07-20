@@ -86,12 +86,13 @@ const FeedContainer = ({
 
 
         // debug
-        if (messageHistory.length && messageHistory.length % 10 === 0) {
+        if (messageHistory.length && messageHistory.length % 40 === 0) {
             console.warn(`
-                We got 10 entries, unsubscribing now
+                We got 40 entries, unsubscribing now
             `)
             console.warn(messageHistory)
-            sendJsonMessage({"event":"unsubscribe","feed":"book_ui_1","product_ids":["PI_XBTUSD"]});
+            console.warn(orders)
+            sendJsonMessage({"event":"unsubscribe","feed":"book_ui_1","product_ids":[feedType === feedTypes.BTC ? "PI_XBTUSD" : "PI_ETHUSD"]});
         }
     }, [feedInit, lastMessage, messageHistory]);
 

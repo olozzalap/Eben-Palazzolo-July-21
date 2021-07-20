@@ -2,20 +2,25 @@
 import React from 'react';
 import { jsx, css } from '@emotion/react'
 import styled from '@emotion/styled';
-import { colors } from '../helpers/constants';
+import { colors, feedTypes } from '../helpers/constants';
 
 const StyledButton = styled.button`
+    border: none;
     border-radius: 3px;
-    padding: 8px 0;
-    width: 120px;
+    color: white;
+    font-size: 20px;
+    padding: 10px 0;
+    width: 150px;
 `;
 
 interface BottomBarProps {
-  toggleInErrorState: Function,
-  setFeedType: Function,
+    feedType: string,
+    toggleInErrorState: Function,
+    setFeedType: Function,
 }
 
 const BottomBar = ({
+    feedType,
     toggleInErrorState,
     setFeedType,
 }: BottomBarProps) => (
@@ -23,10 +28,18 @@ const BottomBar = ({
         display: flex;
         justify-content: center;
     `}>
-        <StyledButton>
+        <StyledButton
+            css={css`
+                background-color: purple;
+            `}
+            onClick={() => setFeedType(feedType === feedTypes.BTC ? feedTypes.ETH : feedTypes.BTC)}
+        >
             Toggle Feed
         </StyledButton>
         <StyledButton
+            css={css`
+                background-color: red;
+            `}
             onClick={() => toggleInErrorState()}
         >
             Kill Feed
