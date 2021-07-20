@@ -2,17 +2,17 @@
 import React from 'react';
 import { jsx, css } from '@emotion/react'
 import styled from '@emotion/styled';
-import { colors, ordersObjectType } from '../helpers/constants';
+import { colors, orderLevelType } from '../helpers/constants';
 
 const StyledButton = styled.button`
 `;
 
 interface FeedModuleProps {
-  orders: ordersObjectType,
+    rows: Array<orderLevelType>,
 }
 
 const FeedModule = ({
-    orders,
+    rows,
 }: FeedModuleProps) => (
     <div css={css`
         display: flex;

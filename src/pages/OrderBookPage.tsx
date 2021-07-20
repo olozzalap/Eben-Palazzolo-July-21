@@ -22,7 +22,7 @@ const OrderBookPage = () => (
                 html, body, div#root {
                     color: ${colors.white};
                     font-family: 'Roboto', sans-serif;
-                    font-size: 15px;
+                    font-size: 16px;
                     height: 100%;
                     margin: 0;
                     padding: 0;

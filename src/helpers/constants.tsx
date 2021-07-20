@@ -42,21 +42,16 @@ export const levelSizes: levelSizeObject = {
     }
 };
 
-price
-size
-total
-
-export type ordersObjectType = {
-    bids: Array<any>,
-    bidsOriginal: Array<Array<number>>,
-    asks: Array<any>,
-    asksOriginal: Array<Array<number>>,
+export type orderLevelType = {
+    price: number,
+    size: number,
+    total: number,
 };
 
 export type ordersObjectType = {
-    bids: Array<any>,
+    bids: Array<orderLevelType>,
     bidsOriginal: Array<Array<number>>,
-    asks: Array<any>,
+    asks: Array<orderLevelType>,
     asksOriginal: Array<Array<number>>,
 };
 

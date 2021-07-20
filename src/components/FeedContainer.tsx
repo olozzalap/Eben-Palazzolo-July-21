@@ -9,14 +9,20 @@ import FeedModule from './FeedModule';
 
 interface FeedContainerProps {
   feedType: string,
+  inErrorState: boolean,
   levelSizeFloat: number,
-}
+  setSocketErrorThrown: Function,
+  socketErrorThrown: boolean,
+};
 const socketUrl = 'wss://www.cryptofacilities.com/ws/v1';
 let messageHistory: Array<Object> = [];
 
 const FeedContainer = ({
     feedType,
+    inErrorState = false,
     levelSizeFloat,
+    setSocketErrorThrown,
+    socketErrorThrown,
 }: FeedContainerProps) => {
     const [orders, setOrders] = useState<ordersObjectType>({
         bids: [],
@@ -34,18 +40,18 @@ const FeedContainer = ({
 
 
     // debug
-    const connectionStatus = {
-        [ReadyState.CONNECTING]: 'Connecting',
-        [ReadyState.OPEN]: 'Open',
-        [ReadyState.CLOSING]: 'Closing',
-        [ReadyState.CLOSED]: 'Closed',
-        [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
-    }[readyState];
-    useEffect(() => {
-        console.warn(`
-            connectionStatus is: ${connectionStatus}
-        `)
-    }, [readyState]);
+    // const connectionStatus = {
+    //     [ReadyState.CONNECTING]: 'Connecting',
+    //     [ReadyState.OPEN]: 'Open',
+    //     [ReadyState.CLOSING]: 'Closing',
+    //     [ReadyState.CLOSED]: 'Closed',
+    //     [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
+    // }[readyState];
+    // useEffect(() => {
+    //     console.warn(`
+    //         connectionStatus is: ${connectionStatus}
+    //     `)
+    // }, [readyState]);
 
     useEffect(() => {
         const lastMessageData = lastMessage?.data ? JSON.parse(lastMessage.data) : null;
@@ -56,11 +62,11 @@ const FeedContainer = ({
             )
         ) {
             messageHistory.push(lastMessageData);
-            console.warn(`
-                lastJsonMessage is:
-            `)
-            console.warn(JSON.stringify(lastJsonMessage))
-            console.warn(lastJsonMessage)
+            // console.warn(`
+            //     lastJsonMessage is:
+            // `)
+            // console.warn(JSON.stringify(lastJsonMessage))
+            // console.warn(lastJsonMessage)
 
             if (!feedInit && lastMessageData?.numLevels) {
                 console.warn(`
@@ -122,12 +128,45 @@ const FeedContainer = ({
         };
     }, [feedType])
 
-    console.warn(`
-        orders are: `)
-    console.warn(orders)
+    // console.warn(`
+    //     orders are: `)
+    // console.warn(orders)
+
+    if (inErrorState && !socketErrorThrown) {
+        sendJsonMessage({"event":"iausdh98ah78asd$#$#4hiuaiuhsdiuabsiudba#4#$#48usbd9GA&(SG978GABS98dgiu8asbgd87bAS*do7n   HNZk iHZ kv -hz2oqkz2NAs89dh(A*Shd89AHSdy(ASYmdAMYSduASdwe9d87ah4 -koh -4ko -ho4k","feed":"book_ui_1","product_ids":["PI_XBTUSD"]});
+        sendJsonMessage({"event":"789ahd43487h343aw9d348*Y#$(H@E*(Hu7asd87A&*SSd87934#gh*DE&GBF Z   KLOM OZLM    OZ Lmo -ZKom hs8d9f89SHD89f(*#HR(*#H(*#HEqG#er89tN)eha98wdhg8a9hwd","feed":"book_ui_1","product_ids":["PI_ETHUSD"]});
+        setSocketErrorThrown(true);
+    }
+    
 
 
     return (
+        inErrorState ? (
+            <div>
+                <h1>Connection issue...</h1>
+                <p>
+                    This Order Book is powered by&nbsp;
+                    <a href="https://www.cryptofacilities.com/" rel="external nofollow noopener noreferrer" target="_blank">
+                        https://www.cryptofacilities.com/&nbsp;
+                    </a>
+                    and it appears their api is having issues at this moment 🤕📉💸😭 We will be back us ASAP
+                </p>
+                <p>
+                    See the following links for more info:
+                    <ul>
+                        <li><a href="https://twitter.com/CryptoFLtd" rel="external nofollow noopener noreferrer" target="_blank">
+                            Crypto Facilities Twitter
+                        </a></li>
+                        <li><a href="https://support.cryptofacilities.com/hc/en-us/categories/115000132213-API" rel="external nofollow noopener noreferrer" target="_blank">
+                            Crypto Facilities API Support Page
+                        </a></li>
+                        <li><a href="https://www.cryptofacilities.com/" rel="external nofollow noopener noreferrer" target="_blank">
+                            cryptofacilities.com
+                        </a></li>
+                    </ul>
+                </p>
+            </div>
+        ) : (
         <div
             css={css`
                 display: flex;
@@ -137,13 +176,13 @@ const FeedContainer = ({
             `}
         >
             <FeedModule
-                orders={orders.bids}
+                rows={orders.bids}
             />
             <FeedModule
-                orders={orders.asks}
+                rows={orders.asks}
             />
         </div>
-    );
+    ));
 };
 
 export default FeedContainer;

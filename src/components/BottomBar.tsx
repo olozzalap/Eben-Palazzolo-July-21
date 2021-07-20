@@ -5,15 +5,18 @@ import styled from '@emotion/styled';
 import { colors } from '../helpers/constants';
 
 const StyledButton = styled.button`
+    border-radius: 3px;
+    padding: 8px 0;
+    width: 120px;
 `;
 
 interface BottomBarProps {
-  killFeed: Function,
+  toggleInErrorState: Function,
   setFeedType: Function,
 }
 
 const BottomBar = ({
-    killFeed,
+    toggleInErrorState,
     setFeedType,
 }: BottomBarProps) => (
     <div css={css`
@@ -23,7 +26,9 @@ const BottomBar = ({
         <StyledButton>
             Toggle Feed
         </StyledButton>
-        <StyledButton>
+        <StyledButton
+            onClick={() => toggleInErrorState()}
+        >
             Kill Feed
         </StyledButton>
     </div>

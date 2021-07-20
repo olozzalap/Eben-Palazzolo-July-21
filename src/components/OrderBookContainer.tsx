@@ -17,6 +17,8 @@ const OrderBookContainer = () => {
 
     const [feedType, setFeedType] = useState<string>(feedTypes.BTC);
     const [levelOption, setLevelOption] = useState<string>(baseLevelOptions.sm);
+    const [socketErrorThrown, setSocketErrorThrown] = useState(false);
+    const [inErrorState, setInErrorState] = useState<boolean>(false);
 
     const levelSizeFloat = levelSizes[feedType][levelOption];
 
@@ -35,10 +37,13 @@ const OrderBookContainer = () => {
             <FeedContainer
                 feedType={feedType}
                 levelSizeFloat={levelSizeFloat}
+                setSocketErrorThrown={setSocketErrorThrown}
+                socketErrorThrown={socketErrorThrown}
+                inErrorState={inErrorState}
             />
 
             <BottomBar
-                killFeed={killFeed}
+                toggleInErrorState={() => setInErrorState(!inErrorState) }
                 setFeedType={setFeedType}
             />
         </>
