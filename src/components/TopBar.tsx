@@ -44,6 +44,8 @@ const TopBar = ({
 
     const feedLevelOptions = levelSizes[feedType];
 
+    document.title = `COB: Crypto Order Book | ${feedType === feedTypes.BTC ? '₿ BTC' : 'Ξ ETH'}`;
+
     return (
         <div css={css`
             display: flex;
