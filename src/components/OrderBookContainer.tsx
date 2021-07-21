@@ -2,23 +2,18 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { jsx, css, Global } from '@emotion/react'
 import styled from '@emotion/styled';
-import { baseLevelOptions, colors, feedTypes, levelSizes } from '../helpers/constants';
+import { baseLevelOptions, colors, feedTypes, levelSizes, spreadType } from '../helpers/constants';
 import BottomBar from './BottomBar';
 import FeedContainer from './FeedContainer';
 import TopBar from './TopBar';
 
-let renderCount = 1;
 
 const OrderBookContainer = () => {
-    console.warn(`
-        OrderBookContainer Render #: ${renderCount}
-        `)
-    renderCount = renderCount + 1;
-
     const [feedType, setFeedType] = useState<string>(feedTypes.BTC);
     const [levelOption, setLevelOption] = useState<string>(baseLevelOptions.sm);
-    const [socketErrorThrown, setSocketErrorThrown] = useState(false);
+    const [socketErrorThrown, setSocketErrorThrown] = useState<string>('');
     const [inErrorState, setInErrorState] = useState<boolean>(false);
+    const [spread, setSpread] = useState<spreadType>({ absolute: 0, relative: 0 });
 
     const levelSizeFloat = levelSizes[feedType][levelOption];
 
@@ -31,22 +26,25 @@ const OrderBookContainer = () => {
         <>
             <TopBar
                 feedType={feedType}
-                setLevelOption={setLevelOption}
                 levelOption={levelOption}
+                setLevelOption={setLevelOption}
+                socketErrorThrown={socketErrorThrown}
+                spread={spread}
             />
 
             <FeedContainer
                 feedType={feedType}
+                inErrorState={inErrorState}
                 levelSizeFloat={levelSizeFloat}
                 setSocketErrorThrown={setSocketErrorThrown}
+                setSpread={setSpread}
                 socketErrorThrown={socketErrorThrown}
-                inErrorState={inErrorState}
             />
 
             <BottomBar
                 feedType={feedType}
-                toggleInErrorState={() => setInErrorState(!inErrorState) }
                 setFeedType={setFeedType}
+                toggleInErrorState={() => setInErrorState(!inErrorState) }
             />
         </>
     );

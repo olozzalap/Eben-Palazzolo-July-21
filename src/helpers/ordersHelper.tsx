@@ -1,4 +1,4 @@
-import { ordersObjectType } from './constants';
+import { maxRows, ordersObjectType } from './constants';
 
 const priceIndex = 0;
 const sizeIndex = 1;
@@ -13,17 +13,21 @@ export const parseInitialOrders = (
         bidsOriginal: bidsArr,
         asks: [],
         asksOriginal: asksArr,
+        maxTotal: 0,
+        spread: {
+            absolute: 0,
+            relative: 0,
+        }
     };
-
+    // BIDS
     let bidRunningTotal = bidsArr[0][sizeIndex];
     newOrders.bids.push({
         price: bidsArr[0][priceIndex],
         size: bidRunningTotal,
         total: bidRunningTotal,
     });
-
     // Skip first bid as it's already parsed above
-    for (let i = 1; i < bidsArr.length; i++) {
+    for (let i = 1; i < bidsArr.length && newOrders.bids.length < maxRows; i++) {
         const currBid = bidsArr[i];
         const lastParsedBid = newOrders.bids[newOrders.bids.length - 1];
         bidRunningTotal += currBid[sizeIndex];
@@ -41,7 +45,7 @@ export const parseInitialOrders = (
             });
         }
     }
-
+    // ASKS
     let askRunningTotal = asksArr[0][sizeIndex];
     newOrders.asks.push({
         price: asksArr[0][priceIndex],
@@ -49,7 +53,7 @@ export const parseInitialOrders = (
         total: askRunningTotal,
     });
     // Skip first ask as it's already parsed above
-    for (let i = 1; i < asksArr.length; i++) {
+    for (let i = 1; i < asksArr.length && newOrders.asks.length < maxRows; i++) {
         const currAsk = asksArr[i];
         const lastParsedAsk = newOrders.asks[newOrders.asks.length - 1];
         askRunningTotal += currAsk[sizeIndex];
@@ -67,6 +71,16 @@ export const parseInitialOrders = (
             });
         }
     }
+
+    const lastNewBidTotal = newOrders.bids[newOrders.bids.length - 1].total;
+    const lastNewAskTotal = newOrders.asks[newOrders.asks.length - 1].total;
+
+    newOrders.maxTotal = Math.max(lastNewBidTotal, lastNewAskTotal);
+
+    const absSpread = newOrders.asks[0].price - newOrders.bids[0].price;
+    const spreadMidpoint = newOrders.bids[0].price + (absSpread / 2);
+    newOrders.spread.absolute = absSpread;
+    newOrders.spread.relative = (absSpread / spreadMidpoint) * 100;
 
     return newOrders;
 };

@@ -1,11 +1,12 @@
-const greenRgbBase = '24, 248, 24';
-const redRgbBase = '248, 24, 24';
-const bgAlphaBase = '.5';
+const greenRgbBase = '7, 138, 114';
+const redRgbBase = '208, 34, 25';
+const bgAlphaBase = '.24';
 
 export const colors = {
-    black: 'rgb(24, 32, 40)',
-    white: 'rgb(248, 244, 242)',
-    gray: 'rgb(128, 128, 128)',
+    black: 'rgb(9, 27, 40)',
+    white: 'rgb(165, 194, 229)',
+    slate: 'rgb(35, 48, 70)',
+    gray: 'rgb(92, 99, 112)',
     green: `rgb(${greenRgbBase})`,
     greenBg: `rgba(${greenRgbBase}, ${bgAlphaBase})`,
     red: `rgb(${redRgbBase})`,
@@ -31,15 +32,20 @@ type levelSizeObject = {
 }
 export const levelSizes: levelSizeObject = {
     [feedTypes.BTC]: {
-        [baseLevelOptions.sm]: 0.5,
-        [baseLevelOptions.med]: 1.0,
-        [baseLevelOptions.lg]: 2.5,
+        [baseLevelOptions.sm]: 0.50,
+        [baseLevelOptions.med]: 1.00,
+        [baseLevelOptions.lg]: 2.50,
     },
     [feedTypes.ETH]: {
         [baseLevelOptions.sm]: 0.05,
-        [baseLevelOptions.med]: 0.1,
+        [baseLevelOptions.med]: 0.10,
         [baseLevelOptions.lg]: 0.25,
     }
+};
+
+export type spreadType = {
+    absolute: number,
+    relative: number,
 };
 
 export type orderLevelType = {
@@ -53,5 +59,9 @@ export type ordersObjectType = {
     bidsOriginal: Array<Array<number>>,
     asks: Array<orderLevelType>,
     asksOriginal: Array<Array<number>>,
+    maxTotal: number,
+    spread: spreadType
 };
+
+export const maxRows = 30;
 

@@ -3,18 +3,23 @@ import React, { useEffect, useMemo, useState } from 'react';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 import { jsx, css, Global } from '@emotion/react'
 import styled from '@emotion/styled';
-import { baseLevelOptions, colors, feedTypes, levelSizes } from '../helpers/constants';
+import { baseLevelOptions, colors, feedTypes, levelSizes, spreadType } from '../helpers/constants';
+import Spread from './Spread';
 
 interface TopBarProps {
   feedType: string,
-  setLevelOption: Function,
   levelOption: string,
+  setLevelOption: Function,
+  socketErrorThrown: string,
+  spread: spreadType,
 }
 
 const TopBar = ({
     feedType,
     setLevelOption,
     levelOption,
+    socketErrorThrown,
+    spread,
 }: TopBarProps) => {
 
     const handleLevelOptionChange = (e: any) => {
@@ -33,34 +38,33 @@ const TopBar = ({
                 font-size: 20px;
                 margin: 0;
             `}>
-                🌽 C.O.B. Crypto Order Book 🌽
+                🌽 COB: Crypto Order Book 🌽
             </h1>
-            <div
-                className="desktop"
-                css={css`
-                    color: ${colors.gray};
-                `}
-            >
-                Spread: 
-                <span className="mono">17.0 (0.05%)</span>
-            </div>
+            {socketErrorThrown ? null : (
+                <div className="desktop">
+                    <Spread
+                        absolute={spread.absolute}
+                        relative={spread.relative}
+                    />
+                </div>
+            )}
             <div>
                 <span>Group:</span>
                 <select
                     css={css`
-                        background-color: ${colors.gray};
+                        background-color: ${colors.slate};
                         border-radius: 3px;
                         color: ${colors.white};
                         cursor: pointer;
-                        margin-left: 5px;
-                        padding: 5px;
+                        margin-left: 3px;
+                        padding: 4px;
                     `}
                     onChange={handleLevelOptionChange}
                     value={levelOption}
                 >
                     {
                         Object.values(baseLevelOptions).map((baseLevelOption) => (
-                            <option value={baseLevelOption}>{feedLevelOptions[baseLevelOption]}</option>
+                            <option value={baseLevelOption}>{feedLevelOptions[baseLevelOption].toFixed(2)}</option>
                         ))
                     }
                 </select>
