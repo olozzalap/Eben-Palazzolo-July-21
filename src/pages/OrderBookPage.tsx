@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
 import { jsx, css, Global } from '@emotion/react'
-import { colors } from '../helpers/constants';
+import { colors, isMobile } from '../helpers/constants';
 import OrderBookContainer from '../components/OrderBookContainer';
 
 
@@ -9,8 +9,8 @@ const OrderBookPage = () => (
     <main>
         {/*/ Fetch GFonts Roboto and Roboto-Mono /*/}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Roboto+Mono&display=swap" rel="stylesheet" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
 
         <Global
             styles={css`
@@ -32,13 +32,14 @@ const OrderBookPage = () => (
                 .mobile {
                     display: none;
                 }
-                @media (max-width: 768px) {
+                ${isMobile ? `
                     .mobile {
                         display: block;
                     }
                     .desktop {
                         display: none;
                     }
+                ` : ''}
                 }
             `}
         />

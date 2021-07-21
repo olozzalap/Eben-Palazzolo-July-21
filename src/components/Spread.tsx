@@ -9,9 +9,12 @@ const Spread = ({
 }: spreadType) => (
     <div css={css`
         color: ${colors.gray};
+        font-weight: 700;
+        padding: 6px 0;
+        text-align: center;
     `}>
         Spread:
-        {'  '}
+        {' '}
         <span className="mono">
             {absolute.toFixed(2)}
             {' '}

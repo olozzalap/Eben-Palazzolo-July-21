@@ -8,16 +8,17 @@ const StyledButton = styled.button`
     border: none;
     border-radius: 3px;
     color: white;
+    cursor: pointer;
     font-size: 20px;
     padding: 10px 0;
     width: 150px;
 `;
 
-interface BottomBarProps {
+type BottomBarProps = {
     feedType: string,
     toggleInErrorState: Function,
     setFeedType: Function,
-}
+};
 
 const BottomBar = ({
     feedType,
@@ -27,10 +28,17 @@ const BottomBar = ({
     <div css={css`
         display: flex;
         justify-content: center;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background-color: ${colors.slateBg};
+        padding: 12px 0;
     `}>
         <StyledButton
             css={css`
-                background-color: purple;
+                background-color: ${colors.purple};
+                margin-right: 18px;
             `}
             onClick={() => setFeedType(feedType === feedTypes.BTC ? feedTypes.ETH : feedTypes.BTC)}
         >
@@ -38,7 +46,7 @@ const BottomBar = ({
         </StyledButton>
         <StyledButton
             css={css`
-                background-color: red;
+                background-color: ${colors.red};
             `}
             onClick={() => toggleInErrorState()}
         >

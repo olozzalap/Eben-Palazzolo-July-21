@@ -1,14 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
 import { jsx, css } from '@emotion/react'
-import { colors, orderLevelType } from '../helpers/constants';
+import { colors, isMobile, orderLevelType } from '../helpers/constants';
 
 
-interface FeedModuleProps {
+type FeedModuleProps = {
     maxTotal: number,
     rows: Array<orderLevelType>,
     type: string,// 'bids' or 'asks'
-}
+};
 
 const FeedModule = ({
     maxTotal,
@@ -26,9 +26,15 @@ const FeedModule = ({
 
             .FeedHeader {
                 color: ${colors.gray};
+                border-width: 2px 0 1px 0;
+                border-color: ${colors.gray};
+                border-style: solid;
+                font-weight: 700;
+                padding: 4px 0;
             }
 
             .FeedRow {
+                padding: 3px 0;
                 position: relative;
 
                 .depth {
@@ -37,6 +43,7 @@ const FeedModule = ({
                     left: 0;
                     bottom: 0;
                     background-color: ${type === 'bids' ? `${colors.greenBg}` : `${colors.redBg}`};
+                    transition: width ease-out 366ms;
                 }
 
                 > span {
@@ -50,8 +57,14 @@ const FeedModule = ({
                 color: ${type === 'bids' ? `${colors.green}` : `${colors.red}`};
             }
 
-            /* Desktop */
-            @media (min-width: 769px) {
+            ${isMobile ? `
+                ${type === 'asks' ? `
+                    .Feed {
+                        display: flex;
+                        flex-wrap: wrap-reverse;
+                    }
+                ` : ''}
+            ` : `
                 ${type === 'bids' ? `
                     .FeedHeader, .FeedRow { flex-direction: row-reverse; }
 
@@ -60,26 +73,19 @@ const FeedModule = ({
                         right: 0;
                     }
                 ` : ''}
-            }
-            /* Mobile */
-            @media (max-width: 768px) {
-                ${type === 'asks' ? `
-                    .Feed {
-                        display: flex;
-                        flex-wrap: wrap-reverse;
-                    }
-                ` : ''}
-            }
+            `}
         `}
     >
-        <div className="FeedHeader">
-            <span>PRICE</span>
-            <span>SIZE</span>
-            <span>TOTAL</span>
-        </div>
+        {isMobile && type === 'bids' ? null : (
+            <div className="FeedHeader mono">
+                <span>PRICE</span>
+                <span>SIZE</span>
+                <span>TOTAL</span>
+            </div>
+        )}
         <div className="Feed mono">
             {rows.map(row => (
-                <div className="FeedRow">
+                <div className="FeedRow" key={row.price}>
                     <aside
                         className="depth"
                         css={css`

@@ -1,13 +1,23 @@
-import { maxRows, ordersObjectType } from './constants';
+import { ordersObjectType } from './constants';
 
 const priceIndex = 0;
 const sizeIndex = 1;
-
-export const parseInitialOrders = (
+let parseInitialOrdersCount = 0;
+type parseInitialOrdersProps = {
     bidsArr: Array<Array<number>>,
     asksArr: Array<Array<number>>,
     levelSizeFloat: number,
-): ordersObjectType => {
+    maxRows: number,
+};
+
+export const parseInitialOrders = ({
+    bidsArr,
+    asksArr,
+    levelSizeFloat,
+    maxRows,
+}: parseInitialOrdersProps): ordersObjectType => {
+    const startTime = Date.now();
+
     let newOrders: ordersObjectType = {
         bids: [],
         bidsOriginal: bidsArr,
@@ -82,14 +92,30 @@ export const parseInitialOrders = (
     newOrders.spread.absolute = absSpread;
     newOrders.spread.relative = (absSpread / spreadMidpoint) * 100;
 
+    parseInitialOrdersCount++;
+    console.warn(`
+        parseInitialOrders #:${parseInitialOrdersCount} | ${Date.now() - startTime}ms | ${bidsArr.length + asksArr.length} items parsed
+        `)
+
     return newOrders;
 };
 
-export const parseOrdersDelta = (
+
+let parseOrdersDeltaCount = 0;
+type parseOrdersDeltaProps = {
     orders: ordersObjectType,
     deltas: {bids: Array<Array<number>>, asks: Array<Array<number>>},
     levelSizeFloat: number,
-): ordersObjectType => {
+    maxRows: number,
+};
+
+export const parseOrdersDelta = ({
+    orders,
+    deltas,
+    levelSizeFloat,
+    maxRows,
+}: parseOrdersDeltaProps): ordersObjectType => {
+    const startTime = Date.now();
     let newBids = orders.bidsOriginal;
     let newAsks = orders.asksOriginal;
 
@@ -146,7 +172,17 @@ export const parseOrdersDelta = (
     //     sortedNewAsks are: ${JSON.stringify(newAsks)}
     //     `)
 
-    return parseInitialOrders(newBids, newAsks, levelSizeFloat);
+    parseOrdersDeltaCount++;
+    console.warn(`
+        parseOrdersDelta #:${parseOrdersDeltaCount} | ${Date.now() - startTime}ms | ${deltas.bids.length + deltas.asks.length} items parsed
+        `)
+
+    return parseInitialOrders({
+        bidsArr: newBids,
+        asksArr: newAsks,
+        levelSizeFloat,
+        maxRows,
+    });
 };
 
 
