@@ -20,7 +20,7 @@ const ErrorModule = ({
             </a>
             and it appears their api is having issues at this moment 🤕📉💸😭 We will be back us ASAP
         </p>
-        <p>
+        <div>
             See the following links for more info:
             <ul>
                 <li><a href="https://twitter.com/CryptoFLtd" rel="external nofollow noopener noreferrer" target="_blank">
@@ -33,7 +33,7 @@ const ErrorModule = ({
                     cryptofacilities.com
                 </a></li>
             </ul>
-        </p>
+        </div>
     </div>
 
 );

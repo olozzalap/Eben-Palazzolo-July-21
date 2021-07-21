@@ -85,7 +85,7 @@ const FeedModule = ({
         )}
         <div className="Feed mono">
             {rows.map(row => (
-                <div className="FeedRow" key={row.price}>
+                <div className="FeedRow" data-testid="FeedRow" key={row.price}>
                     <aside
                         className="depth"
                         css={css`

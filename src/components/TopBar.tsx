@@ -59,7 +59,7 @@ const TopBar = ({
                 font-size: 20px;
                 margin: 0;
             `}>
-                🌽 COB: Crypto Order Book | {feedType === feedTypes.BTC ? '₿ BTC' : 'Ξ ETH'}
+                <span>🌽 COB: Crypto Order Book</span> | <span>{feedType === feedTypes.BTC ? '₿ BTC' : 'Ξ ETH'}</span>
             </h1>
             {socketErrorThrown ? null : (
                 <div className="desktop">

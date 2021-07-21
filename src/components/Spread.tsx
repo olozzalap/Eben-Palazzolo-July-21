@@ -15,10 +15,8 @@ const Spread = ({
     `}>
         Spread:
         {' '}
-        <span className="mono">
-            {absolute.toFixed(2)}
-            {' '}
-            ({relative.toFixed(3)}%)
+        <span className="mono" data-testid="spreadText">
+            {`${absolute.toFixed(2)} (${relative.toFixed(3)}%)`}
         </span>
     </div>
 );

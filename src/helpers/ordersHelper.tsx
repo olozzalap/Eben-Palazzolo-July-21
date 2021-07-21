@@ -119,19 +119,11 @@ export const parseOrdersDelta = ({
     let newBids = orders.bidsOriginal;
     let newAsks = orders.asksOriginal;
 
-    // console.warn(`
-    //     parseOrdersDelta!
-    //     deltas are: `)
-    // console.warn(JSON.stringify(deltas));
-
     for (let i = 0; i < deltas.bids.length; i++) {
         const bidDeltaPrice = deltas.bids[i][priceIndex];
         const bidDeltaSize = deltas.bids[i][sizeIndex];
 
         const matchingNewBidIndex = newBids.findIndex((bid) => bid[priceIndex] === bidDeltaPrice);
-        // console.warn(`
-        //     matchingNewBidIndex is: ${matchingNewBidIndex}
-        // `)
 
         if (matchingNewBidIndex === -1 && bidDeltaSize > 0) {// bidDelta price level doesn't exist in newBids, add it
             newBids.push([bidDeltaPrice, bidDeltaSize]);
@@ -149,9 +141,6 @@ export const parseOrdersDelta = ({
         const askDeltaSize = deltas.asks[i][sizeIndex];
 
         const matchingNewAskIndex = newAsks.findIndex((ask) => ask[priceIndex] === askDeltaPrice);
-        // console.warn(`
-        //     matchingNewAskIndex is: ${matchingNewAskIndex}
-        // `)
 
         if (matchingNewAskIndex === -1 && askDeltaSize > 0) {// askDelta price level doesn't exist in newAsks, add it
             newAsks.push([askDeltaPrice, askDeltaSize]);
@@ -166,11 +155,6 @@ export const parseOrdersDelta = ({
 
     newBids.sort((a, b): number => b[priceIndex] - a[priceIndex]);
     newAsks.sort((a, b): number => a[priceIndex] - b[priceIndex]);
-
-    // console.warn(`
-    //     sortedNewBids are: ${JSON.stringify(newBids)}
-    //     sortedNewAsks are: ${JSON.stringify(newAsks)}
-    //     `)
 
     parseOrdersDeltaCount++;
     console.warn(`
